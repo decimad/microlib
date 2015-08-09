@@ -53,7 +53,6 @@ namespace util {
 			}
 		}
 
-		template< typename T >
 		void pop_back()
 		{
 			--size_;

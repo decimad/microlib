@@ -22,7 +22,7 @@ namespace util {
 		using const_iterator = typename container_type::const_iterator;
 
 		static_heap(Compare compare = Compare())
-			: ebo(std::move(compare))
+			: detail::ebo<Compare>(std::move(compare))
 		{}
 
 		bool push(T val) {
