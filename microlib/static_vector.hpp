@@ -145,9 +145,9 @@ namespace ulib {
 			}
 		}
 
-		void erase(const_iterator where)
+		void erase(iterator where)
 		{
-			std::rotate(where, where + 1, end);
+			std::rotate(where, where + 1, end());
 			pop_back();
 		}
 
