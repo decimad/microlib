@@ -17,12 +17,17 @@ namespace ulib {
 	namespace insertion_sort {
 
 		template< typename Iterator, typename Compare >
-		void insert_binary(Iterator begin, Iterator end, Compare compare)
-		{
-			if (begin != end) {
-				std::rotate(std::upper_bound(begin, end - 1, *(end - 1)), end - 1, end);
-			}
+		void insert_binary_back(Iterator begin, Iterator end, Compare compare)
+		{		
+			std::rotate(std::upper_bound(begin, end - 1, *(end - 1)), end - 1, end);	
 		}
+
+		template< typename Iterator, typename Compare >
+		void insert_binary_front(Iterator begin, Iterator end, Compare compare)
+		{
+			std::rotate(begin, td::upper_bound(begin + 1, end, *begin), end);
+		}
+
 
 		template< typename Iterator, typename Compare >
 		void insert(Iterator begin, Iterator end, Compare compare)
@@ -77,19 +82,31 @@ namespace ulib {
 			}
 		}
 
+		template< typename Iterator, typename Compare >
+		void restore_invariant_front(Iterator begin, Iterator end, Compare&& compare)
+		{
+			insert_binary_front(begin, end, std::forward<Compare>(compare));
+		}
+
+		template< typename Iterator, typename Compare >
+		void restore_invariant_back(Iterator begin, Iterator end, Compare&& compare)
+		{
+			insert_binary_back(begin, end, std::forward<Compare>(compare));
+		}
+
 	}
 
 	template< typename T, size_t Size, typename Compare = std::less<T> >
-	struct sorted_vector 
-		: private detail::ebo<Compare>
+	struct sorted_static_vector : private detail::ebo<Compare>
 	{
 	public:
 		using container_type = static_vector<T, Size>;
 		using iterator = typename container_type::iterator;
 		using const_iterator = typename container_type::const_iterator;
+		using size_type = typename container_type::size_type;
 
 	public:
-		sorted_vector()
+		sorted_static_vector()
 			: ebo(Compare())
 		{}
 
@@ -108,7 +125,7 @@ namespace ulib {
 		bool emplace_binary(Args&&... args)
 		{
 			if (data_.emplace_back(std::forward<Args>(args)...)) {
-				insertion_sort::insert_binary(data_.begin(), data_.end(), *static_cast<Compare*>(this));
+				insertion_sort::insert_binary_back(data_.begin(), data_.end(), *static_cast<Compare*>(this));
 				return true;
 			} else {
 				return false;
@@ -118,6 +135,40 @@ namespace ulib {
 		void erase(const_iterator it)
 		{
 			data_.erase(it);
+		}
+
+		template< typename ValType >
+		void replace_min(ValType&& val)
+		{
+			data_[0] = std::forward<ValType>(val);
+			insertion_sort::restore_invariant_front(begin(), end(), *static_cast<Compare*>(this));
+		}
+
+		template< typename ValType >
+		void replace_max(ValType&& val)
+		{
+			data_.back() = std::forward<ValType>(val);
+			insertion_sort::restore_invariant_front(begin(), end(), *static_cast<Compare*>(this));
+		}
+
+		T& min_element()
+		{
+			return data_[0];
+		}
+
+		const T& min_element() const
+		{
+			return data_[0];
+		}
+
+		T& max_element()
+		{
+			return data_.back();
+		}
+
+		const T& max_element() const
+		{
+			return data_.back();
 		}
 
 		// Call this if you changed a property to the given item which changed the ordering invariant
@@ -142,22 +193,22 @@ namespace ulib {
 			return data_.end();
 		}
 
-		T& operator[](size_t index)
+		T& operator[](size_type index)
 		{
 			return data_[index];
 		}
 
-		const T& operator[](size_t index) const
+		const T& operator[](size_type index) const
 		{
 			return data_[index];
 		}
 
-		size_t size() const
+		size_type size() const
 		{
 			return data_.size();
 		}
 
-		size_t capacity() const
+		size_type capacity() const
 		{
 			return data_.capacity();
 		}
@@ -165,6 +216,16 @@ namespace ulib {
 		void clear()
 		{
 			data_.clear();
+		}
+
+		void pop_back()
+		{
+			data_.pop_back();
+		}
+
+		void pop_front()
+		{
+			data_.pop_front();
 		}
 
 	private:
