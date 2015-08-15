@@ -1,0 +1,6 @@
+#ifndef MICROLIB_TEST_SORTED_STATIC_VECTOR_TEST_HPP__
+#define MICROLIB_TEST_SORTED_STATIC_VECTOR_TEST_HPP__
+
+void sorted_static_vector_test();
+
+#endif
