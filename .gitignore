@@ -19,3 +19,10 @@ Thumbs.db
 obj/
 [Rr]elease*/
 _ReSharper*/
+obsolete/
+ipch/
+*.opensdf
+*.sdf
+*.sln
+*.vcxproj
+*.vcxproj.filters
