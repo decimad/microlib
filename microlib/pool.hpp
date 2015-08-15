@@ -1,5 +1,5 @@
-#ifndef STM_UTIL_POOL_HPP__
-#define STM_UTIL_POOL_HPP__
+#ifndef MICROLIB_POOL_HPP__
+#define MICROLIB_POOL_HPP__
 
 #include <microlib/concurrency.hpp>
 #include <microlib/util.hpp>
@@ -7,7 +7,7 @@
 #include <cstddef>
 #include <new>
 
-namespace util {
+namespace ulib {
 
 	namespace detail {
 

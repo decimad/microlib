@@ -1,11 +1,12 @@
-#ifndef STM_UTIL_SORTING_HPP__
-#define STM_UTIL_SORTING_HPP__
+#ifndef MICROLIB_SORTING_HPP__
+#define MICROLIB_SORTING_HPP__
 
 #include <utility>
 #include <algorithm>
 #include <microlib/static_vector.hpp>
+#include <microlib/util.hpp>
 
-namespace util {
+namespace ulib {
 
 	//
 	// We're using insertion sort for we expect small sets, it is simple, it is stable, it uses almost no stack, it works well on mostly presorted data
@@ -78,21 +79,9 @@ namespace util {
 
 	}
 
-	namespace detail {
-
-		// Simple empty-base-class optimizer.
-
-		template< typename... Bases >
-		struct ebo : public Bases... {
-			ebo(const Bases&... args)
-				: Bases(args)...
-			{}
-		};
-
-	}
-
 	template< typename T, size_t Size, typename Compare = std::less<T> >
-	struct sorted_vector : private detail::ebo<Compare>
+	struct sorted_vector 
+		: private detail::ebo<Compare>
 	{
 	public:
 		using container_type = static_vector<T, Size>;
@@ -132,7 +121,7 @@ namespace util {
 		}
 
 		// Call this if you changed a property to the given item which changed the ordering invariant
-		void restore_invariant(iterator it)
+		void restore(iterator it)
 		{
 			insertion_sort::restore_invariant(begin(), end(), it, *static_cast<Compare*>(this));
 		}

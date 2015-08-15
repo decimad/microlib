@@ -1,9 +1,9 @@
-#ifndef MICROPTP_UTIL_STATEMACHINE_HPP__
-#define MICROPTP_UTIL_STATEMACHINE_HPP__
+#ifndef MICROLIB_STATEMACHINE_HPP__
+#define MICROLIB_STATEMACHINE_HPP__
 
 #include <microlib/variant.hpp>
 
-namespace util {
+namespace ulib {
 
 	template< typename... States >
 	struct state_machine {

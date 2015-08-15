@@ -1,12 +1,12 @@
-#pragma once
+#ifndef MICROLIB_PRIORITY_QUEUE_HPP__
+#define MICROLIB_PRIORITY_QUEUE_HPP__
+
 #include <microlib/static_vector.hpp>
 #include <algorithm>
 
-namespace util {
+namespace ulib {
 	
-	// The std:: heap functions don't allow for random element erasing. Since these ones create a new heap on element removal,
-	// better don't use them.
-	// In almost all cases this is a must have feature, since clients will want to cancel "scheduled" elements.
+	// FIXME: Replace with with static_heap/static_interval_heap or sorted vector implementation
 
 	template< typename Element, size_t Size >
 	struct static_priority_queue {
@@ -133,3 +133,5 @@ namespace util {
 	};
 
 }
+
+#endif

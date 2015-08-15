@@ -11,7 +11,7 @@
 #include <chmtx.h>
 #include <chbsem.h>
 
-namespace util {
+namespace ulib {
 
 	struct NoConcurrency {
 

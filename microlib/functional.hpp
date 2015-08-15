@@ -1,10 +1,10 @@
-#ifndef MICROPTP_UTIL_FUNCTIONAL_HPP__
-#define MICROPTP_UTIL_FUNCTIONAL_HPP__
+#ifndef MICROLIB_FUNCTIONAL_HPP__
+#define MICROLIB_FUNCTIONAL_HPP__
 
 #include <memory>
 #include <microlib/util.hpp>
 
-namespace util {
+namespace ulib {
 
 
 	template< typename Prototype >

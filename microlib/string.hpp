@@ -1,9 +1,9 @@
-#ifndef MICROPTP_UTIL_STRING_HPP__
-#define MICROPTP_UTIL_STRING_HPP__
+#ifndef MICROLIB_STRING_HPP__
+#define MICROLIB_STRING_HPP__
 
 #include <cstring>
 
-namespace util {
+namespace ulib {
 
 	class string {
 	public:

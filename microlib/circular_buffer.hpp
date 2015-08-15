@@ -1,8 +1,8 @@
-#ifndef MICROPTP_UTIL_CIRCULARBUFFER_HPP_
-#define MICROPTP_UTIL_CIRCULARBUFFER_HPP_
+#ifndef MICROLIB_CIRCULARBUFFER_HPP_
+#define MICROLIB_CIRCULARBUFFER_HPP_
 #include <array>
 
-namespace util {
+namespace ulib {
 
 	template< typename T, size_t Size >
 	struct circular_buffer {

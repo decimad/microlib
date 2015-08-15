@@ -3,13 +3,8 @@
 #include <cstring>
 #include <microlib/string.hpp>
 
-namespace util {
+namespace ulib {
 
-	/*
-		char* data_;
-		size_t max_size_;
-		size_t size_;
-	*/
 	string::string(char* data, size_t max_size)
 		: data_(data), max_size_(max_size), size_(0)
 	{}

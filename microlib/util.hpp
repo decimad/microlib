@@ -1,9 +1,29 @@
-#ifndef MICROPTP_UTIL_HPP__
-#define MICROPTP_UTIL_HPP__
+#ifndef MICROLIB_UTIL_HPP__
+#define MICROLIB_UTIL_HPP__
 #include <type_traits>
 #include <cstddef>
+#include <utility>
 
-namespace util {
+namespace ulib {
+
+	namespace detail {
+
+		// Simple empty-base-class optimizer.
+
+		template< typename... Bases >
+		struct ebo : public Bases... {
+			ebo(Bases... args)
+				: Bases(std::move(args))...
+			{}
+		};
+
+	}
+	
+	template< bool Cond, typename A, typename B >
+	using conditional_t = typename std::conditional< Cond, A, B >::type;
+
+	template< bool Cond, typename T = void >
+	using enable_if_t = typename std::enable_if<Cond, T>::type;
 
 	template< typename... Types >
 	struct max_alignment;

@@ -1,11 +1,11 @@
-#ifndef MICROPTP_UTIL_STATIC_UNION_HPP
-#define MICROPTP_UTIL_STATIC_UNION_HPP
+#ifndef MICROLIB_STATIC_UNION_HPP
+#define MICROLIB_STATIC_UNION_HPP
 
 #include <utility>
 #include <type_traits>
 #include <microlib/util.hpp>
 
-namespace util {
+namespace ulib {
 
 	template< typename T, size_t Current = 0, typename... Types>
 	struct type_to_index;

@@ -1,16 +1,9 @@
-/*
- * intrusive_list.hpp
- *
- *  Created on: 22.12.2014
- *      Author: Michael
- */
-
-#ifndef INTRUSIVE_LIST_HPP_
-#define INTRUSIVE_LIST_HPP_
+#ifndef MICROLIB_INTRUSIVE_LIST_HPP_
+#define MICROLIB_INTRUSIVE_LIST_HPP_
 
 #include <microlib/concurrency.hpp>
 
-namespace util {
+namespace ulib {
 
 	template< typename T, typename ConcurrencyTrait = NoConcurrency >
 	struct intrusive_stack :

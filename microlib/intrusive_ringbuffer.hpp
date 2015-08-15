@@ -1,16 +1,9 @@
-/*
- * intrusive_ring.hpp
- *
- *  Created on: 22.12.2014
- *      Author: Michael
- */
-
-#ifndef INTRUSIVE_RING_HPP_
-#define INTRUSIVE_RING_HPP_
+#ifndef MICROLIB_INTRUSIVE_RING_HPP_
+#define MICROLIB_INTRUSIVE_RING_HPP_
 
 #include <microlib/concurrency.hpp>
 
-namespace util {
+namespace ulib {
 
 	template< typename Type, unsigned int Size, typename ConcurrencyTrait = NoConcurrency >
 	struct intrusive_ringbuffer :

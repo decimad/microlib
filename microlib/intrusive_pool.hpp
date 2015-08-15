@@ -1,12 +1,5 @@
-/*
- * intrusive_pool.hpp
- *
- *  Created on: 22.12.2014
- *      Author: Michael
- */
-
-#ifndef INTRUSIVE_POOL_HPP_
-#define INTRUSIVE_POOL_HPP_
+#ifndef MICROLIB_INTRUSIVE_POOL_HPP_
+#define MICROLIB_INTRUSIVE_POOL_HPP_
 
 #include <microlib/concurrency.hpp>
 #include <utility>
@@ -15,10 +8,9 @@
 
 // FIXME, get rid of
 #include <microlib/util.hpp>
-
 //#define DEBUG_POOLS
 
-namespace util {
+namespace ulib {
 
 	/*
 	 * We could use smart pointers here,
