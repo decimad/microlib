@@ -22,23 +22,23 @@ namespace ulib {
 	namespace insertion_sort {
 
 		template< typename Iterator, typename Compare >
-		void insert_binary_back(Iterator begin, Iterator end, Compare compare)
+		void insert_binary_back(Iterator begin, Iterator end, Compare&& compare)
 		{		
-			std::rotate(std::upper_bound(begin, end - 1, *(end - 1)), end - 1, end);	
+			std::rotate(std::upper_bound(begin, end - 1, *(end - 1), std::forward<Compare>(compare)), end - 1, end);
 		}
 
 		template< typename Iterator, typename Compare >
-		void insert_binary_front(Iterator begin, Iterator end, Compare compare)
+		void insert_binary_front(Iterator begin, Iterator end, Compare&& compare)
 		{
-			std::rotate(begin, td::upper_bound(begin + 1, end, *begin), end);
+			std::rotate(begin, std::upper_bound(begin + 1, end, *begin, std::forward<Compare>(compare)), end);
 		}
 
 
 		template< typename Iterator, typename Compare >
-		void insert(Iterator begin, Iterator end, Compare compare)
+		void insert(Iterator begin, Iterator end, Compare&& compare)
 		{
 			if (begin != end) {
-				for (auto temp = end - 1; temp != begin && !compare(*(temp - 1), *temp); --temp) {
+				for (auto temp = end - 1; temp != begin && !compare(*(temp - 1), *temp, std::forward<Compare>(compare)); --temp) {
 					std::swap(*(temp - 1), *temp);
 				}
 			}
@@ -111,8 +111,9 @@ namespace ulib {
 		using size_type = typename container_type::size_type;
 
 	public:
-		sorted_static_vector()
-			: ebo(Compare())
+		template< typename... Args >
+		sorted_static_vector( Args&&... args )
+			: detail::ebo<Compare>(Compare(std::forward<Args>(args)...))
 		{}
 
 		template<typename... Args>
@@ -137,7 +138,7 @@ namespace ulib {
 			}
 		}
 
-		void erase(const_iterator it)
+		void erase(iterator it)
 		{
 			data_.erase(it);
 		}
