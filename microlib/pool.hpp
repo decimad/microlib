@@ -150,6 +150,11 @@ namespace ulib {
 			return the_element_->get_ptr();
 		}
 
+		const Type* get_payload() const
+		{
+			return the_element_->get_ptr();
+		}
+
 		explicit operator bool() const {
 			return the_element_ != nullptr;
 		}
@@ -162,6 +167,14 @@ namespace ulib {
 		const Type* operator->() const
 		{
 			return the_element_->get_ptr();
+		}
+
+		Type& operator*() {
+			return *get_payload();
+		}
+
+		const Type& operator*() const {
+			return *get_payload();
 		}
 
 	private:
