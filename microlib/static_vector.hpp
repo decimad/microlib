@@ -147,12 +147,10 @@ namespace ulib {
 		}
 
 		void pop_front()
-		{
-			if (size()) {
-				std::rotate(begin(), begin() + 1, end());
-				--storage::size_ref();
-				*(data() + (storage::size_ref()))->~T();
-			}
+		{	
+			std::rotate(begin(), begin() + 1, end());
+			--storage::size_ref();
+			(data() + (storage::size_ref()))->~T();		
 		}
 
 		void pop_back()
@@ -197,6 +195,26 @@ namespace ulib {
 		const T& operator[](size_t index) const
 		{
 			return *(data() + index);
+		}
+
+		T& front()
+		{
+			return *(data() + Base);
+		}
+
+		const T& front() const
+		{
+			return *(data() + Base);
+		}
+
+		T& back()
+		{
+			return *(data() + Base + size() - 1);
+		}
+
+		const T& back() const
+		{
+			return *(data() + Base + size() - 1);
 		}
 
 		size_type size() const
