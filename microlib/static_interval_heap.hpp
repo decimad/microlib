@@ -8,7 +8,7 @@ namespace ulib {
 
 	template< typename T, size_t Size, typename Compare = std::less<T> >
 	class static_inverval_heap
-		: public util::detail::ebo<Compare>
+		: public ulib::detail::ebo<Compare>
 	{
 	public:
 		using storage_type = static_vector<T, Size + 2, 2>;
@@ -18,7 +18,7 @@ namespace ulib {
 		using const_iterator = typename storage_type::const_iterator;
 
 		static_inverval_heap(Compare comp = Compare())
-			: util::detail::ebo<Compare>(std::move(comp))
+			: ulib::detail::ebo<Compare>(std::move(comp))
 		{}
 
 	public:
@@ -102,7 +102,7 @@ namespace ulib {
 				const unsigned char side = data_.size() % 2;
 
 				if (side == 1) {
-					if (!compare(data_[left(vindex)], val)) {
+					if (!compare(data_[index(vindex, 0)], val)) {
 						// move left to right
 						data_.emplace_back(std::move(element(vindex, 0)));
 						sift_up(vindex, 0, std::forward<ValType>(val));
@@ -263,11 +263,6 @@ namespace ulib {
 
 		static size_type rhs(size_type vindex) {
 			return (vindex * 2) + 1;
-		}
-
-		static size_type left(size_type vindex)
-		{
-			return vindex * 2;
 		}
 
 		static size_type index(size_type virtual_index, unsigned char side)
