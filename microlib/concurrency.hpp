@@ -1,15 +1,16 @@
-/*
- * concurrency.hpp
- *
- *  Created on: 22.12.2014
- *      Author: Michael
- */
+//          Copyright Michael Steinberg 2015
+// Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//          http://www.boost.org/LICENSE_1_0.txt)
 
 #ifndef CONCURRENCY_HPP_
 #define CONCURRENCY_HPP_
+
+/*
 #include <ch.h>
 #include <chmtx.h>
 #include <chbsem.h>
+*/
 
 namespace ulib {
 
@@ -24,7 +25,7 @@ namespace ulib {
 		}
 
 	};
-
+/*
 	struct SysLock {
 
 		void protect() {
@@ -68,7 +69,7 @@ namespace ulib {
 
 		::BinarySemaphore sema_;
 	};
-
+*/
 
 }
 
