@@ -47,6 +47,18 @@ namespace ulib {
 			return storage_.template as<T>();
 		}
 
+		template< typename... Cases, typename... Args >
+		void dispatch(Args&&... args)
+		{
+			storage_.dispatch<Cases...>(std::forward<Args>(args)...);
+		}
+
+		template< typename... Cases, typename... Args >
+		void dispatch_self(Args&&... args)
+		{
+			storage_.dispatch_self<Cases...>(std::forward<Args>(args)...);
+		}
+
 	private:
 		static_union<States...> storage_;
 	};

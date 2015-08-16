@@ -42,8 +42,8 @@ namespace ulib {
 			}
 		};
 
-#define METHOD(x) \
-	::ulib::experimental::method<decltype(x), x>
+#define METHOD(X) \
+	::ulib::experimental::method<decltype( X ), X >
 
 	}
 
@@ -169,7 +169,7 @@ namespace ulib {
 			using case_type = typename Case0::case_type;
 			if (type_to_index<case_type, 0, Types...>::value == current_type) {
 				using call_type = typename Case0::call_type;
-				call_type::call(std::forward<Args>(args)..., to_type<case_type>());
+				call_type::call(std::forward<Args>(args)..., as<case_type>());
 			} else {
 				return dispatch_impl(meta::list<Cases...>(), std::forward<Args>(args)...);
 			}
@@ -181,7 +181,7 @@ namespace ulib {
 			using case_type = typename Case0::case_type;
 			if (type_to_index<case_type, 0, Types...>::value == current_type) {
 				using call_type = typename Case0::call_type;
-				call_type::call(to_type<case_type>(), std::forward<Args>(args)...);
+				call_type::call(as<case_type>(), std::forward<Args>(args)...);
 			} else {
 				return dispatch_self_impl(meta::list<Cases...>(), std::forward<Args>(args)...);
 			}
