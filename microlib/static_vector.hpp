@@ -155,13 +155,13 @@ namespace ulib {
 		{	
 			std::rotate(begin(), begin() + 1, end());
 			--storage::size_ref();
-			(data() + (storage::size_ref()))->~T();		
+			(data() + size() + Base)->~T();
 		}
 
 		void pop_back()
 		{
-			(data() + size() + Base)->~T();
 			--storage::size_ref();
+			(data() + size() + Base)->~T();
 		}
 
 		iterator begin()
@@ -234,10 +234,8 @@ namespace ulib {
 
 		void clear()
 		{
-			const auto currsize = size();
 			for (auto& elem : *this) {
 				elem.~T();
-				//(data()+i)->~T();
 			}
 			storage::size_ref() = 0;
 		}

@@ -136,16 +136,19 @@ namespace ulib {
 		template< typename T >
 		bool is() const
 		{
+			static_assert(type_to_index<T, 0, Types...>::value != -1, "Not my type!");
 			return current_type == type_to_index<T, 0, Types...>::value;
 		}
 
 		template< typename T >
 		T& as() {
+			static_assert(type_to_index<T, 0, Types...>::value != -1, "Not my type!");
 			return *reinterpret_cast<T*>(&storage_);
 		}
 
 		template< typename T >
 		const T& as() const {
+			static_assert(type_to_index<T, 0, Types...>::value != -1, "Not my type!");
 			return *reinterpret_cast<const T*>(&storage_);
 		}
 
