@@ -63,7 +63,7 @@ namespace ulib {
 		void insertion_sort_binary(Iterator begin, Iterator end, Compare compare)
 		{
 			for (auto it = begin; it != end; ++it) {
-				insert_binary(begin, it, compare);
+				insert_binary_back(begin, it, compare);
 			}
 		}
 

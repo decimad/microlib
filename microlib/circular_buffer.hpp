@@ -51,6 +51,11 @@ namespace ulib {
 			}
 		}
 
+		const std::array<T, Size>& store() const
+		{
+			return arr_;
+		}
+
 	private:
 		std::array<T, Size> arr_;
 		size_t front_;
