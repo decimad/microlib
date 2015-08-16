@@ -9,6 +9,8 @@
 namespace ulib {
 	namespace meta {
 
+		using uint8 = unsigned char;
+
 		template< typename Type, Type... elements >
 		struct static_array {
 			using type = Type;
@@ -44,6 +46,9 @@ namespace ulib {
 		{
 			using type = static_array< Type, dest_list..., value, src_tail... >;
 		};
+
+		template< typename... Args >
+		struct list {};
 
 		/*
 
