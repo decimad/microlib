@@ -64,7 +64,7 @@ namespace ulib {
 	template< typename T, size_t Size >
 	struct circular_averaging_buffer {
 		circular_averaging_buffer()
-			: front_(0), sum_(0)
+			: sum_(0), front_(0)
 		{}
 
 		void reset(T value = 0)

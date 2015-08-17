@@ -22,7 +22,7 @@ namespace ulib {
 		size_t avail = available();
 
 		ret = vsnprintf(data_, avail, fmt, myargs);
-		if (ret >= 0 && ret <= avail) {
+		if (ret >= 0 && size_t(ret) <= avail) {
 			size_ += ret;
 		}
 		va_end(myargs);

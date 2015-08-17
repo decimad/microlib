@@ -31,7 +31,7 @@ namespace ulib {
 			using target_ptr_type = TargetRet(Class::*)(TargetArgs...);
 
 			method_impl(Class* ptr, target_ptr_type target)
-				: ptr_(ptr), target_(target)
+				: target_(target), ptr_(ptr)
 			{}
 
 			Ret call(Args... args) const override {

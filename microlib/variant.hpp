@@ -104,6 +104,7 @@ namespace ulib {
 		}
 
 		void destruct_impl(size_t index, std::integral_constant<size_t, sizeof...(Types)>) {
+			(void) index;
 			current_type = -1;
 		}
 
@@ -113,7 +114,7 @@ namespace ulib {
 
 	public:
 		void clear() {
-			if (current_type != -1) destruct(current_type);
+			if (current_type != size_t(-1)) destruct(current_type);
 		}
 
 		template< typename ToType, typename... Args >
@@ -121,7 +122,7 @@ namespace ulib {
 		{
 			static_assert(type_to_index<ToType, 0, Types...>::value != -1, "Not my type.");
 
-			if (current_type != -1) {
+			if (current_type != size_t(-1)) {
 				destruct(current_type);
 			}
 
@@ -196,7 +197,8 @@ namespace ulib {
 
 		template< typename... Args >
 		void dispatch_self_impl(meta::list<>, Args&&... args)
-		{}
+		{
+		}
 
 		template< typename Iface, size_t Index >
 		Iface* get_interface_impl(size_t current_type, std::integral_constant<size_t, Index>) {
@@ -209,6 +211,7 @@ namespace ulib {
 
 		template<typename Iface>
 		Iface* get_interface_impl(size_t current_type, std::integral_constant<size_t, Size>) {
+			(void) current_type;
 			return nullptr;
 		}
 

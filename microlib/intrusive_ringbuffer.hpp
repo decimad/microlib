@@ -17,7 +17,8 @@ namespace ulib {
 
 		intrusive_ringbuffer()
 		{
-			for(auto i = 0; i<Size-1; ++i) {
+			// using short instead of int makes a difference in compiled size :-/
+			for(unsigned short i = 0; i<Size-1; ++i) {
 				intrusive_ring_set_next(elements+i, elements+i+1);
 			}
 			intrusive_ring_set_next(elements+Size-1, elements);
