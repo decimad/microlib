@@ -168,7 +168,7 @@ namespace ulib {
 			return data_.end();
 		}
 
-		iterator fix(iterator where)
+		iterator restore(iterator where)
 		{
 			size_type idx = where - begin() + 2;
 			unsigned char side = idx % 2;
