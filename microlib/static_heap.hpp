@@ -55,7 +55,6 @@ namespace ulib {
 		template< typename ValType >
 		void replace(ValType&& val) {
 			sift_up_move(sift_down_hole(root()), std::forward<ValType>(val));
-			//sift_down(1, std::forward<ValType>(val));
 		}
 
 		// Restores the heap invariants when they were broken by changing
@@ -82,7 +81,7 @@ namespace ulib {
 
 		// Returns a const reference to the current top value.
 		// UB if the heap is empty.
-		T& top_element() const {
+		const T& top_element() const {
 			return data_[root()];
 		}
 
