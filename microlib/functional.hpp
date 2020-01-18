@@ -11,9 +11,8 @@
 
 namespace ulib {
 
-
 	template< typename Prototype >
-	class function;
+	class function {};
 
 	template< typename Ret, typename... Args >
 	class function< Ret(Args...) >
@@ -71,8 +70,8 @@ namespace ulib {
 		
 		using storage_type =
 			std::aligned_storage_t<
-				max_size<method_impl<function,void>, free_impl<void>>::value,
-				max_alignment<method_impl<function,void>, free_impl<void>>::value
+				max_size     <method_impl<function, Ret, Args...>, free_impl<Ret, Args...>>::value,
+				max_alignment<method_impl<function, Ret, Args...>, free_impl<Ret, Args...>>::value
 			>;
 
 
