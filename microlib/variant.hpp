@@ -6,10 +6,11 @@
 #ifndef MICROLIB_STATIC_UNION_HPP
 #define MICROLIB_STATIC_UNION_HPP
 
+#include <microlib/meta_array.hpp>
 #include <utility>
 #include <type_traits>
 #include <microlib/util.hpp>
-#include <microlib/meta.hpp>
+#include <microlib/meta_list.hpp>
 
 namespace ulib {
 
@@ -44,6 +45,8 @@ namespace ulib {
 
 #define METHOD(X) \
 	::ulib::experimental::method<decltype( X ), X >
+
+		struct sink { template<typename ...Args> sink(Args const & ... ) {} };
 
 	}
 
@@ -87,8 +90,9 @@ namespace ulib {
 	using index_to_type_t = typename index_to_type<Index, Types...>::type;
 
 	template< typename... Types >
-	struct static_union {
+	struct variant {
 	private:
+		using types = ulib::meta::list< Types... >;
 		static constexpr size_t Size = sizeof...(Types);
 
 		template< size_t Index >
@@ -112,7 +116,45 @@ namespace ulib {
 			destruct_impl(index, std::integral_constant<size_t, 0>());
 		}
 
+		template< size_t Index >
+		void copy_impl(const variant& other, std::integral_constant<size_t, Index>)
+		{
+			if( other.current_type == Index ) {
+				using type = typename index_to_type<Index, Types...>::type;
+				current_type = Index;
+				new(&storage_) type(other);
+			} else {
+				copy_impl(std::move(other), std::integral_constant<size_t, Index+1>());
+			}
+		}
+
+		void copy_impl(const variant& other, std::integral_constant<size_t, sizeof...(Types)>)
+		{
+			current_type = -1;
+		}
+
+		template< size_t Index >
+		void move_impl(variant&& other, std::integral_constant<size_t, Index>)
+		{
+			if( other.current_type == Index ) {
+				using type = typename index_to_type<Index, Types...>::type;
+				current_type = Index;
+				new(&storage_) type(std::move(other.as<type>()));
+				other.clear();
+			} else {
+				move_impl(std::move(other), std::integral_constant<size_t, Index+1>());
+			}
+		}
+
+		void move_impl(variant&& other, std::integral_constant<size_t, sizeof...(Types)>)
+		{
+			current_type = -1;
+			other.clear();
+		}
+
+
 	public:
+
 		void clear() {
 			if (current_type != size_t(-1)) destruct(current_type);
 		}
@@ -193,11 +235,14 @@ namespace ulib {
 
 		template< typename... Args >
 		void dispatch_impl(meta::list<>, Args&&... args)
-		{}
+		{
+			experimental::sink { args ... };
+		}
 
 		template< typename... Args >
 		void dispatch_self_impl(meta::list<>, Args&&... args)
 		{
+			experimental::sink { args ... };
 		}
 
 		template< typename Iface, size_t Index >
@@ -222,11 +267,28 @@ namespace ulib {
 			return get_interface_impl<Iface>(current_type, std::integral_constant<size_t, 0>());
 		}
 
-		static_union()
+		template< typename T >
+		variant( T&& val )
+		{
+			current_type = type_to_index<T, 0, Types...>::value;
+			new (&storage_) T(std::forward<T>(val));
+		}
+
+		variant( const variant& other )
+		{
+			copy_impl( other, std::integral_constant<size_t, 0>());
+		}
+
+		variant( variant&& other )
+		{
+			move_impl(std::move( other ), std::integral_constant<size_t, 0>());
+		}
+
+		variant()
 			: current_type(-1)
 		{}
 
-		~static_union()
+		~variant()
 		{
 			clear();
 		}

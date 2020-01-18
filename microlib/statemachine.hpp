@@ -50,17 +50,17 @@ namespace ulib {
 		template< typename... Cases, typename... Args >
 		void dispatch(Args&&... args)
 		{
-			storage_.dispatch<Cases...>(std::forward<Args>(args)...);
+			storage_.template dispatch<Cases...>(std::forward<Args>(args)...);
 		}
 
 		template< typename... Cases, typename... Args >
 		void dispatch_self(Args&&... args)
 		{
-			storage_.dispatch_self<Cases...>(std::forward<Args>(args)...);
+			storage_.template dispatch_self<Cases...>(std::forward<Args>(args)...);
 		}
 
 	private:
-		static_union<States...> storage_;
+		variant<States...> storage_;
 	};
 
 }
