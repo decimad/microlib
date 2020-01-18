@@ -167,6 +167,7 @@ namespace ulib {
 		}
 
 		void clear() {
+			// destructors shall be called
 			while (size()) {
 				pop();
 			}
@@ -178,7 +179,7 @@ namespace ulib {
 		}
 
 	private:
-		
+
 		T* ptr(size_t index) {
 			return reinterpret_cast<T*>(&data_[index%Size]);
 		}

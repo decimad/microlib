@@ -44,29 +44,32 @@ namespace ulib {
 			}
 		}
 
+		// Note: does not check for empty sequences
 		template< typename Iterator, typename Compare >
 		void insertion_sort(Iterator begin, Iterator end, Compare compare)
 		{
-			for (auto it = begin; it != end; ++it) {
+			for (auto it = begin+1; it != end; ++it) {
 				insert(begin, it, compare);
 			}
 		}
 
-
+		// Note: does not check for empty sequences
 		template< typename Iterator >
 		void insertion_sort(Iterator begin, Iterator end)
 		{
 			insertion_sort(begin, end, std::less<>());
 		}
 
+		// Note: does not check for empty sequences
 		template< typename Iterator, typename Compare >
 		void insertion_sort_binary(Iterator begin, Iterator end, Compare compare)
 		{
-			for (auto it = begin; it != end; ++it) {
+			for (auto it = begin+1; it != end; ++it) {
 				insert_binary_back(begin, it, compare);
 			}
 		}
 
+		// Note: does not check for empty sequences
 		template< typename Iterator>
 		void insertion_sort_binary(Iterator begin, Iterator end)
 		{
@@ -138,11 +141,6 @@ namespace ulib {
 			}
 		}
 
-		void erase(iterator it)
-		{
-			data_.erase(it);
-		}
-
 		template< typename ValType >
 		void replace_min(ValType&& val)
 		{
@@ -177,12 +175,6 @@ namespace ulib {
 			return data_.back();
 		}
 
-		// Call this if you changed a property to the given item which changed the ordering invariant
-		void restore(iterator it)
-		{
-			insertion_sort::restore_invariant(begin(), end(), it, *static_cast<Compare*>(this));
-		}
-
 		iterator begin() {
 			return data_.begin();
 		}
@@ -197,6 +189,17 @@ namespace ulib {
 
 		const_iterator end() const {
 			return data_.end();
+		}
+
+		void erase(iterator it)
+		{
+			data_.erase(it);
+		}
+
+		// Call this if you changed a property to the given item which changed the ordering invariant
+		void restore(iterator it)
+		{
+			insertion_sort::restore_invariant(begin(), end(), it, *static_cast<Compare*>(this));
 		}
 
 		T& operator[](size_type index)

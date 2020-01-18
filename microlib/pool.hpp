@@ -30,6 +30,8 @@ namespace ulib {
 		template< typename Type >
 		struct pool_element_type
 		{
+			using type = Type;
+
 			template< typename... Args >
 			void construct(Args&&... args) {
 				new (&storage_) Type(std::forward<Args>(args)...);
@@ -122,9 +124,9 @@ namespace ulib {
 			return result;
 		}
 
-		pointer_type get()
+		Type* get()
 		{
-			return the_element_;
+			return get_payload();
 		}
 
 		pointer_type release()
@@ -182,7 +184,7 @@ namespace ulib {
 	};
 
 
-	template< typename Type, size_t Size, /*size_t Padding = 0,*/ typename ConcurrencyTrait = NoConcurrency >
+	template< typename Type, size_t Size, typename ConcurrencyTrait = NoConcurrency >
 	struct pool : public ConcurrencyTrait {
 		using element_type = detail::pool_element_type<Type>;
 		using pointer_type = pool_ptr<Type>;
