@@ -9,156 +9,163 @@
 #include <memory>
 #include <microlib/util.hpp>
 
-namespace ulib {
+namespace ulib
+{
 
-	template< typename Prototype >
-	class function {};
+    template <typename Prototype>
+    class function
+    {
+    };
 
-	template< typename Ret, typename... Args >
-	class function< Ret(Args...) >
-	{
-	private:
-		struct function_impl {
-			virtual Ret call( Args... args ) const = 0;
-			virtual void clone_construct(void* dest) const = 0;
-			virtual ~function_impl() {};
-		};
-		
-		template< typename Class, typename TargetRet, typename... TargetArgs >
-		struct method_impl : public function_impl
-		{
-			using target_ptr_type = TargetRet(Class::*)(TargetArgs...);
+    template <typename Ret, typename... Args>
+    class function<Ret(Args...)>
+    {
+      private:
+        struct function_impl
+        {
+            virtual Ret call(Args... args) const = 0;
+            virtual void clone_construct(void *dest) const = 0;
+            virtual ~function_impl(){};
+        };
 
-			method_impl(Class* ptr, target_ptr_type target)
-				: target_(target), ptr_(ptr)
-			{}
+        template <typename Class, typename TargetRet, typename... TargetArgs>
+        struct method_impl : public function_impl
+        {
+            using target_ptr_type = TargetRet (Class::*)(TargetArgs...);
 
-			Ret call(Args... args) const override {
-				return (ptr_->*target_)(std::move(args)...);
-			}
+            method_impl(Class *ptr, target_ptr_type target) : target_(target), ptr_(ptr)
+            {
+            }
 
-			void clone_construct(void* dest) const override
-			{
-				new (dest) method_impl(ptr_, target_);
-			}
+            Ret call(Args... args) const override
+            {
+                return (ptr_->*target_)(std::move(args)...);
+            }
 
-			target_ptr_type target_;
-			Class* ptr_;
-		};
+            void clone_construct(void *dest) const override
+            {
+                new (dest) method_impl(ptr_, target_);
+            }
 
-		template< typename TargetRet, typename... TargetArgs >
-		struct free_impl : public function_impl
-		{
-			using target_ptr_type = TargetRet (*) (TargetArgs...);
+            target_ptr_type target_;
+            Class *ptr_;
+        };
 
-			free_impl(target_ptr_type target)
-				: target_(target)
-			{
-			}
+        template <typename TargetRet, typename... TargetArgs>
+        struct free_impl : public function_impl
+        {
+            using target_ptr_type = TargetRet (*)(TargetArgs...);
 
-			Ret call(Args... args) const override {
-				return target_(args...);
-			}
+            free_impl(target_ptr_type target) : target_(target)
+            {
+            }
 
-			void clone_construct(void* dest) const override
-			{
-				new (dest) free_impl(target_);
-			}
+            Ret call(Args... args) const override
+            {
+                return target_(args...);
+            }
 
-			target_ptr_type target_;
-		};
-		
-		using storage_type =
-			std::aligned_storage_t<
-				max_size     <method_impl<function, Ret, Args...>, free_impl<Ret, Args...>>::value,
-				max_alignment<method_impl<function, Ret, Args...>, free_impl<Ret, Args...>>::value
-			>;
+            void clone_construct(void *dest) const override
+            {
+                new (dest) free_impl(target_);
+            }
 
+            target_ptr_type target_;
+        };
 
-	public:
-		function()
-			: initialized_(false)
-		{}
+        using storage_type = std::aligned_storage_t<max_size<method_impl<function, Ret, Args...>, free_impl<Ret, Args...>>::value,
+                                                    max_alignment<method_impl<function, Ret, Args...>, free_impl<Ret, Args...>>::value>;
 
-		function(const function& other)
-			: initialized_(false)
-		{
-			*this = other;
-		}
+      public:
+        function() : initialized_(false)
+        {
+        }
 
-		template< typename Class, typename TargetRet, typename... TargetArgs >
-		function(Class* ptr, TargetRet (Class::*func)(TargetArgs...) )
-			: initialized_(true)
-		{
-			new (&storage_) method_impl<Class, TargetRet, TargetArgs...>(ptr, func);
-		}
+        function(const function &other) : initialized_(false)
+        {
+            *this = other;
+        }
 
-		template< typename TargetRet, typename... TargetArgs >
-		function( TargetRet(*target)(TargetArgs...))
-			: initialized_(true)
-		{
-			new (&storage_) free_impl<TargetRet, TargetArgs...>(target);
-		}
+        template <typename Class, typename TargetRet, typename... TargetArgs>
+        function(Class *ptr, TargetRet (Class::*func)(TargetArgs...)) : initialized_(true)
+        {
+            new (&storage_) method_impl<Class, TargetRet, TargetArgs...>(ptr, func);
+        }
 
-		function& operator=(const function& other)
-		{
-			reset();
-			auto* ptr = other.get_impl();
-			if (ptr) {
-				ptr->clone_construct(&storage_);
-				initialized_ = true;
-			}
+        template <typename TargetRet, typename... TargetArgs>
+        function(TargetRet (*target)(TargetArgs...)) : initialized_(true)
+        {
+            new (&storage_) free_impl<TargetRet, TargetArgs...>(target);
+        }
 
-			return *this;
-		}
+        function &operator=(const function &other)
+        {
+            reset();
+            auto *ptr = other.get_impl();
+            if (ptr)
+            {
+                ptr->clone_construct(&storage_);
+                initialized_ = true;
+            }
 
-		explicit operator bool() const {
-			return initialized_;
-		}
+            return *this;
+        }
 
-		template< typename... CallArgs >
-		Ret operator()(CallArgs&&... args) const
-		{
-			return get_impl()->call(std::forward<CallArgs>(args)...);
-		}
+        explicit operator bool() const
+        {
+            return initialized_;
+        }
 
-		void reset()
-		{
-			if (initialized_) {
-				get_impl()->~function_impl();
-				initialized_ = false;
-			}
-		}
+        template <typename... CallArgs>
+        Ret operator()(CallArgs &&... args) const
+        {
+            return get_impl()->call(std::forward<CallArgs>(args)...);
+        }
 
-		~function()
-		{
-			reset();
-		}
+        void reset()
+        {
+            if (initialized_)
+            {
+                get_impl()->~function_impl();
+                initialized_ = false;
+            }
+        }
 
-	private:
-		function_impl* get_impl() {
-			if (initialized_) {
-				return reinterpret_cast<function_impl*>(&storage_);
-			}
-			else {
-				return nullptr;
-			}
-		}
+        ~function()
+        {
+            reset();
+        }
 
-		const function_impl* get_impl() const {
-			if (initialized_) {
-				return reinterpret_cast<const function_impl*>(&storage_);
-			}
-			else {
-				return nullptr;
-			}
-		}
+      private:
+        function_impl *get_impl()
+        {
+            if (initialized_)
+            {
+                return reinterpret_cast<function_impl *>(&storage_);
+            }
+            else
+            {
+                return nullptr;
+            }
+        }
 
-	private:
-		storage_type storage_;
-		bool initialized_;
-	};
+        const function_impl *get_impl() const
+        {
+            if (initialized_)
+            {
+                return reinterpret_cast<const function_impl *>(&storage_);
+            }
+            else
+            {
+                return nullptr;
+            }
+        }
 
-}
+      private:
+        storage_type storage_;
+        bool initialized_;
+    };
+
+} // namespace ulib
 
 #endif

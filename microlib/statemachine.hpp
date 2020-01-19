@@ -8,61 +8,63 @@
 
 #include <microlib/variant.hpp>
 
-namespace ulib {
+namespace ulib
+{
 
-	template< typename... States >
-	struct state_machine {
+    template <typename... States>
+    struct state_machine
+    {
 
-		state_machine()
-		{
-		}
+        state_machine()
+        {
+        }
 
-		template<typename ToState, typename... Args>
-		void to_state(Args&&... args)
-		{
-			storage_.template to_type<ToState>( std::forward<Args>(args)... );
-		}
-		
-		template< typename Iface >
-		Iface* get_state_interface()
-		{
-			return storage_.template get_interface<Iface>();
-		}
+        template <typename ToState, typename... Args>
+        void to_state(Args &&... args)
+        {
+            storage_.template to_type<ToState>(std::forward<Args>(args)...);
+        }
 
-		template< typename T >
-		bool is_state() const
-		{
-			return storage_.template is<T>();
-		}
+        template <typename Iface>
+        Iface *get_state_interface()
+        {
+            return storage_.template get_interface<Iface>();
+        }
 
-		template< typename T >
-		T& as_state()
-		{
-			return storage_.template as<T>();
-		}
+        template <typename T>
+        bool is_state() const
+        {
+            return storage_.template is<T>();
+        }
 
-		template< typename T >
-		const T& as_state() const
-		{
-			return storage_.template as<T>();
-		}
+        template <typename T>
+        T &as_state()
+        {
+            return storage_.template as<T>();
+        }
 
-		template< typename... Cases, typename... Args >
-		void dispatch(Args&&... args)
-		{
-			storage_.template dispatch<Cases...>(std::forward<Args>(args)...);
-		}
+        template <typename T>
+        const T &as_state() const
+        {
+            return storage_.template as<T>();
+        }
 
-		template< typename... Cases, typename... Args >
-		void dispatch_self(Args&&... args)
-		{
-			storage_.template dispatch_self<Cases...>(std::forward<Args>(args)...);
-		}
+        template <typename... Cases, typename... Args>
+        void dispatch(Args &&... args)
+        {
+            storage_.template dispatch<Cases...>(std::forward<Args>(args)...);
+        }
 
-	private:
-		variant<States...> storage_;
-	};
+        template <typename... Cases, typename... Args>
+        void dispatch_self(Args &&... args)
+        {
+            storage_.template dispatch_self<Cases...>(std::forward<Args>(args)...);
+        }
 
-}
+      private:
+        variant<States...> storage_;
+    };
+
+} // namespace ulib
 
 #endif

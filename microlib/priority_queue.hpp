@@ -6,137 +6,151 @@
 #ifndef MICROLIB_PRIORITY_QUEUE_HPP__
 #define MICROLIB_PRIORITY_QUEUE_HPP__
 
-#include <microlib/static_vector.hpp>
 #include <algorithm>
+#include <microlib/static_vector.hpp>
 
-namespace ulib {
-	
-	// FIXME: Replace with with static_heap/static_interval_heap or sorted vector implementation
 
-	template< typename Element, size_t Size >
-	struct static_priority_queue {
-	public:
-		using container_type = static_vector< Element, Size >;
-		using iterator = typename container_type::iterator;
-		using const_iterator = typename container_type::const_iterator;
+namespace ulib
+{
 
-	public:
-		template< typename... Args >
-		bool insert(Args&&... args)
-		{
-			if (data_.emplace_back(std::forward<Args>(args)...)) {
-				std::push_heap(data_.begin(), data_.end(), &priority_compare(const Element&, const Element&));
-			} else {
-				return false;
-			}
-		}
+    // FIXME: Replace with with static_heap/static_interval_heap or sorted vector implementation
 
-		void pop()
-		{
-			std::pop_heap(data_.begin(), data_.end());
-		}
+    template <typename Element, size_t Size>
+    struct static_priority_queue
+    {
+      public:
+        using container_type = static_vector<Element, Size>;
+        using iterator = typename container_type::iterator;
+        using const_iterator = typename container_type::const_iterator;
 
-		Element& top() {
-			return data_[0];
-		}
+      public:
+        template <typename... Args>
+        bool insert(Args &&... args)
+        {
+            if (data_.emplace_back(std::forward<Args>(args)...))
+            {
+                std::push_heap(data_.begin(), data_.end(), &priority_compare(const Element &, const Element &));
+            }
+            else
+            {
+                return false;
+            }
+        }
 
-		const Element& top() const {
-			return data_[0];
-		}
+        void pop()
+        {
+            std::pop_heap(data_.begin(), data_.end());
+        }
 
-		iterator begin()
-		{
-			return data_.begin();
-		}
+        Element &top()
+        {
+            return data_[0];
+        }
 
-		iterator end()
-		{
-			return data_.end();
-		}
+        const Element &top() const
+        {
+            return data_[0];
+        }
 
-		const iterator begin() const
-		{
-			return data_.begin();
-		}
+        iterator begin()
+        {
+            return data_.begin();
+        }
 
-		const_iterator end() const
-		{
-			return data_.end();
-		}
+        iterator end()
+        {
+            return data_.end();
+        }
 
-		// try not to call this.
-		void erase(const_iterator it)
-		{
-			data_.erase(it);
-			std::make_heap(begin(), end());
-		}
+        const iterator begin() const
+        {
+            return data_.begin();
+        }
 
-	private:
-		static_vector< Element, Size > data_;
-	};
+        const_iterator end() const
+        {
+            return data_.end();
+        }
 
-	template< typename Element, size_t Size >
-	struct static_priority_queue_wrap_around {
-	public:
-		using container_type = static_vector< Element, Size >;
-		using iterator = typename container_type::iterator;
-		using const_iterator = typename container_type::const_iterator;
+        // try not to call this.
+        void erase(const_iterator it)
+        {
+            data_.erase(it);
+            std::make_heap(begin(), end());
+        }
 
-	public:
-		template< typename... Args >
-		bool insert(Args&&... args)
-		{
-			if (data_.emplace_back(std::forward<Args>(args)...)) {
-				std::push_heap(data_.begin(), data_.end(), &priority_compare(const Element&, const Element&));
-			} else {
-				return false;
-			}
-		}
+      private:
+        static_vector<Element, Size> data_;
+    };
 
-		void pop()
-		{
-			std::pop_heap(data_.begin(), data_.end());
-		}
+    template <typename Element, size_t Size>
+    struct static_priority_queue_wrap_around
+    {
+      public:
+        using container_type = static_vector<Element, Size>;
+        using iterator = typename container_type::iterator;
+        using const_iterator = typename container_type::const_iterator;
 
-		Element& top() {
-			return data_[0];
-		}
+      public:
+        template <typename... Args>
+        bool insert(Args &&... args)
+        {
+            if (data_.emplace_back(std::forward<Args>(args)...))
+            {
+                std::push_heap(data_.begin(), data_.end(), &priority_compare(const Element &, const Element &));
+            }
+            else
+            {
+                return false;
+            }
+        }
 
-		const Element& top() const {
-			return data_[0];
-		}
+        void pop()
+        {
+            std::pop_heap(data_.begin(), data_.end());
+        }
 
-		iterator begin()
-		{
-			return data_.begin();
-		}
+        Element &top()
+        {
+            return data_[0];
+        }
 
-		iterator end()
-		{
-			return data_.end();
-		}
+        const Element &top() const
+        {
+            return data_[0];
+        }
 
-		const iterator begin() const
-		{
-			return data_.begin();
-		}
+        iterator begin()
+        {
+            return data_.begin();
+        }
 
-		const_iterator end() const
-		{
-			return data_.end();
-		}
+        iterator end()
+        {
+            return data_.end();
+        }
 
-		// try not to call this.
-		void erase(const_iterator it)
-		{
-			data_.erase(it);
-			std::make_heap(begin(), end());
-		}
+        const iterator begin() const
+        {
+            return data_.begin();
+        }
 
-	private:
-		static_vector< Element, Size > data_;
-	};
+        const_iterator end() const
+        {
+            return data_.end();
+        }
 
-}
+        // try not to call this.
+        void erase(const_iterator it)
+        {
+            data_.erase(it);
+            std::make_heap(begin(), end());
+        }
+
+      private:
+        static_vector<Element, Size> data_;
+    };
+
+} // namespace ulib
 
 #endif

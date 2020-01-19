@@ -8,71 +8,71 @@
 
 /*
 #include <ch.h>
-#include <chmtx.h>
 #include <chbsem.h>
+#include <chmtx.h>
+
 */
 
-namespace ulib {
+namespace ulib
+{
 
-	struct NoConcurrency {
+    struct NoConcurrency
+    {
 
-		void protect() {
+        void protect()
+        {
+        }
 
-		}
+        void unprotect()
+        {
+        }
+    };
+    /*
+        struct SysLock {
 
-		void unprotect() {
+            void protect() {
+                chSysLock();
+            }
 
-		}
+            void unprotect() {
+                chSysUnlock();
+            }
 
-	};
-/*
-	struct SysLock {
+        };
 
-		void protect() {
-			chSysLock();
-		}
-
-		void unprotect() {
-			chSysUnlock();
-		}
-
-	};
-
-	struct Mutex {
-		Mutex()
-		{
-			chMtxInit(&mut_);
-		}
-
-
-
-		::Mutex mut_;
-	};
-
-	struct BinarySem {
-		BinarySem()
-		{
-			chBSemInit(&sema_, 0);
-		}
-
-		void signal() {
-			chBSemSignal(&sema_);
-		}
-
-		void wait() {
-			chBSemWait(&sema_);
-		}
-
-		void reset() {
-			chBSemReset(&sema_, 0);
-		}
-
-		::BinarySemaphore sema_;
-	};
-*/
-
-}
+        struct Mutex {
+            Mutex()
+            {
+                chMtxInit(&mut_);
+            }
 
 
+
+            ::Mutex mut_;
+        };
+
+        struct BinarySem {
+            BinarySem()
+            {
+                chBSemInit(&sema_, 0);
+            }
+
+            void signal() {
+                chBSemSignal(&sema_);
+            }
+
+            void wait() {
+                chBSemWait(&sema_);
+            }
+
+            void reset() {
+                chBSemReset(&sema_, 0);
+            }
+
+            ::BinarySemaphore sema_;
+        };
+    */
+
+} // namespace ulib
 
 #endif /* CONCURRENCY_HPP_ */

@@ -5,18 +5,18 @@
  *      Author: Michael
  */
 
+namespace ulib
+{
 
-namespace ulib {
+    namespace detail
+    {
 
-namespace detail {
+        template <typename T>
+        constexpr bool is_power_of_2(T val)
+        {
+            return (val > 1) ? is_power_of_2(val / T(2)) : (val == T(1));
+        }
 
-	template< typename T >
-	constexpr bool is_power_of_2( T val )
-	{
-		return (val > 1) ? is_power_of_2( val/T(2) ) : (val == T(1));
-	}
+    } // namespace detail
 
-}
-
-}
-
+} // namespace ulib

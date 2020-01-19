@@ -8,13 +8,15 @@
 #ifndef MICROLIB_META_SHARED_HPP_
 #define MICROLIB_META_SHARED_HPP_
 
-namespace ulib {
-namespace meta {
+namespace ulib
+{
+    namespace meta
+    {
 
-	template< typename List, size_t Index >
-	struct get;
+        template <typename List, size_t Index>
+        struct get;
 
-}
-}
+    }
+} // namespace ulib
 
 #endif

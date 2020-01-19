@@ -6,241 +6,259 @@
 #ifndef MICROLIB_SORTING_HPP__
 #define MICROLIB_SORTING_HPP__
 
-#include <utility>
 #include <algorithm>
 #include <microlib/static_vector.hpp>
 #include <microlib/util.hpp>
-
-namespace ulib {
-
-	//
-	// We're using insertion sort for we expect small sets, it is simple, it is stable, it uses almost no stack, it works well on mostly presorted data
-	// Use insert_binary only if comparison costs far outweigh swap costs!
-	//
-	// alternative to pursue might be a shell sort implementation
-
-	namespace insertion_sort {
-
-		template< typename Iterator, typename Compare >
-		void insert_binary_back(Iterator begin, Iterator end, Compare&& compare)
-		{		
-			std::rotate(std::upper_bound(begin, end - 1, *(end - 1), std::forward<Compare>(compare)), end - 1, end);
-		}
-
-		template< typename Iterator, typename Compare >
-		void insert_binary_front(Iterator begin, Iterator end, Compare&& compare)
-		{
-			std::rotate(begin, std::upper_bound(begin + 1, end, *begin, std::forward<Compare>(compare)), end);
-		}
+#include <utility>
 
 
-		template< typename Iterator, typename Compare >
-		void insert(Iterator begin, Iterator end, Compare&& compare)
-		{
-			if (begin != end) {
-				for (auto temp = end - 1; temp != begin && !compare(*(temp - 1), *temp, std::forward<Compare>(compare)); --temp) {
-					std::swap(*(temp - 1), *temp);
-				}
-			}
-		}
+namespace ulib
+{
 
-		// Note: does not check for empty sequences
-		template< typename Iterator, typename Compare >
-		void insertion_sort(Iterator begin, Iterator end, Compare compare)
-		{
-			for (auto it = begin+1; it != end; ++it) {
-				insert(begin, it, compare);
-			}
-		}
+    //
+    // We're using insertion sort for we expect small sets, it is simple, it is stable, it uses almost no stack, it works well on mostly
+    // presorted data Use insert_binary only if comparison costs far outweigh swap costs!
+    //
+    // alternative to pursue might be a shell sort implementation
 
-		// Note: does not check for empty sequences
-		template< typename Iterator >
-		void insertion_sort(Iterator begin, Iterator end)
-		{
-			insertion_sort(begin, end, std::less<>());
-		}
+    namespace insertion_sort
+    {
 
-		// Note: does not check for empty sequences
-		template< typename Iterator, typename Compare >
-		void insertion_sort_binary(Iterator begin, Iterator end, Compare compare)
-		{
-			for (auto it = begin+1; it != end; ++it) {
-				insert_binary_back(begin, it, compare);
-			}
-		}
+        template <typename Iterator, typename Compare>
+        void insert_binary_back(Iterator begin, Iterator end, Compare &&compare)
+        {
+            std::rotate(std::upper_bound(begin, end - 1, *(end - 1), std::forward<Compare>(compare)), end - 1, end);
+        }
 
-		// Note: does not check for empty sequences
-		template< typename Iterator>
-		void insertion_sort_binary(Iterator begin, Iterator end)
-		{
-			insertion_sort_binary(begin, end, std::less<>());
-		}
+        template <typename Iterator, typename Compare>
+        void insert_binary_front(Iterator begin, Iterator end, Compare &&compare)
+        {
+            std::rotate(begin, std::upper_bound(begin + 1, end, *begin, std::forward<Compare>(compare)), end);
+        }
 
-		template< typename Iterator, typename Compare >
-		void restore_invariant(Iterator begin, Iterator end, Iterator elem, Compare&& compare)
-		{
-			while (elem != begin && !compare(*(elem - 1), *elem)) {
-				std::swap(*(elem - 1), *elem);
-				--elem;
-			}
+        template <typename Iterator, typename Compare>
+        void insert(Iterator begin, Iterator end, Compare &&compare)
+        {
+            if (begin != end)
+            {
+                for (auto temp = end - 1; temp != begin && !compare(*(temp - 1), *temp, std::forward<Compare>(compare)); --temp)
+                {
+                    std::swap(*(temp - 1), *temp);
+                }
+            }
+        }
 
-			while (elem + 1 != end && compare(*(elem + 1), *elem)) {
-				std::swap(*(elem + 1), *elem);
-				++elem;
-			}
-		}
+        // Note: does not check for empty sequences
+        template <typename Iterator, typename Compare>
+        void insertion_sort(Iterator begin, Iterator end, Compare compare)
+        {
+            for (auto it = begin + 1; it != end; ++it)
+            {
+                insert(begin, it, compare);
+            }
+        }
 
-		template< typename Iterator, typename Compare >
-		void restore_invariant_front(Iterator begin, Iterator end, Compare&& compare)
-		{
-			insert_binary_front(begin, end, std::forward<Compare>(compare));
-		}
+        // Note: does not check for empty sequences
+        template <typename Iterator>
+        void insertion_sort(Iterator begin, Iterator end)
+        {
+            insertion_sort(begin, end, std::less<>());
+        }
 
-		template< typename Iterator, typename Compare >
-		void restore_invariant_back(Iterator begin, Iterator end, Compare&& compare)
-		{
-			insert_binary_back(begin, end, std::forward<Compare>(compare));
-		}
+        // Note: does not check for empty sequences
+        template <typename Iterator, typename Compare>
+        void insertion_sort_binary(Iterator begin, Iterator end, Compare compare)
+        {
+            for (auto it = begin + 1; it != end; ++it)
+            {
+                insert_binary_back(begin, it, compare);
+            }
+        }
 
-	}
+        // Note: does not check for empty sequences
+        template <typename Iterator>
+        void insertion_sort_binary(Iterator begin, Iterator end)
+        {
+            insertion_sort_binary(begin, end, std::less<>());
+        }
 
-	template< typename T, size_t Size, typename Compare = std::less<T> >
-	struct sorted_static_vector : private detail::ebo<Compare>
-	{
-	public:
-		using container_type = static_vector<T, Size>;
-		using iterator = typename container_type::iterator;
-		using const_iterator = typename container_type::const_iterator;
-		using size_type = typename container_type::size_type;
+        template <typename Iterator, typename Compare>
+        void restore_invariant(Iterator begin, Iterator end, Iterator elem, Compare &&compare)
+        {
+            while (elem != begin && !compare(*(elem - 1), *elem))
+            {
+                std::swap(*(elem - 1), *elem);
+                --elem;
+            }
 
-	public:
-		template< typename... Args >
-		sorted_static_vector( Args&&... args )
-			: detail::ebo<Compare>(Compare(std::forward<Args>(args)...))
-		{}
+            while (elem + 1 != end && compare(*(elem + 1), *elem))
+            {
+                std::swap(*(elem + 1), *elem);
+                ++elem;
+            }
+        }
 
-		template<typename... Args>
-		bool emplace(Args&&... args)
-		{
-			if (data_.emplace_back(std::forward<Args>(args)...)) {
-				insertion_sort::insert(data_.begin(), data_.end(), *static_cast<Compare*>(this));
-				return true;
-			} else {
-				return false;
-			}
-		}
+        template <typename Iterator, typename Compare>
+        void restore_invariant_front(Iterator begin, Iterator end, Compare &&compare)
+        {
+            insert_binary_front(begin, end, std::forward<Compare>(compare));
+        }
 
-		template<typename... Args>
-		bool emplace_binary(Args&&... args)
-		{
-			if (data_.emplace_back(std::forward<Args>(args)...)) {
-				insertion_sort::insert_binary_back(data_.begin(), data_.end(), *static_cast<Compare*>(this));
-				return true;
-			} else {
-				return false;
-			}
-		}
+        template <typename Iterator, typename Compare>
+        void restore_invariant_back(Iterator begin, Iterator end, Compare &&compare)
+        {
+            insert_binary_back(begin, end, std::forward<Compare>(compare));
+        }
 
-		template< typename ValType >
-		void replace_min(ValType&& val)
-		{
-			data_[0] = std::forward<ValType>(val);
-			insertion_sort::restore_invariant_front(begin(), end(), *static_cast<Compare*>(this));
-		}
+    } // namespace insertion_sort
 
-		template< typename ValType >
-		void replace_max(ValType&& val)
-		{
-			data_.back() = std::forward<ValType>(val);
-			insertion_sort::restore_invariant_front(begin(), end(), *static_cast<Compare*>(this));
-		}
+    template <typename T, size_t Size, typename Compare = std::less<T>>
+    struct sorted_static_vector : private detail::ebo<Compare>
+    {
+      public:
+        using container_type = static_vector<T, Size>;
+        using iterator = typename container_type::iterator;
+        using const_iterator = typename container_type::const_iterator;
+        using size_type = typename container_type::size_type;
 
-		T& min_element()
-		{
-			return data_[0];
-		}
+      public:
+        template <typename... Args>
+        sorted_static_vector(Args &&... args) : detail::ebo<Compare>(Compare(std::forward<Args>(args)...))
+        {
+        }
 
-		const T& min_element() const
-		{
-			return data_[0];
-		}
+        template <typename... Args>
+        bool emplace(Args &&... args)
+        {
+            if (data_.emplace_back(std::forward<Args>(args)...))
+            {
+                insertion_sort::insert(data_.begin(), data_.end(), *static_cast<Compare *>(this));
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
 
-		T& max_element()
-		{
-			return data_.back();
-		}
+        template <typename... Args>
+        bool emplace_binary(Args &&... args)
+        {
+            if (data_.emplace_back(std::forward<Args>(args)...))
+            {
+                insertion_sort::insert_binary_back(data_.begin(), data_.end(), *static_cast<Compare *>(this));
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
 
-		const T& max_element() const
-		{
-			return data_.back();
-		}
+        template <typename ValType>
+        void replace_min(ValType &&val)
+        {
+            data_[0] = std::forward<ValType>(val);
+            insertion_sort::restore_invariant_front(begin(), end(), *static_cast<Compare *>(this));
+        }
 
-		iterator begin() {
-			return data_.begin();
-		}
+        template <typename ValType>
+        void replace_max(ValType &&val)
+        {
+            data_.back() = std::forward<ValType>(val);
+            insertion_sort::restore_invariant_front(begin(), end(), *static_cast<Compare *>(this));
+        }
 
-		iterator end() {
-			return data_.end();
-		}
+        T &min_element()
+        {
+            return data_[0];
+        }
 
-		const_iterator begin() const {
-			return data_.begin();
-		}
+        const T &min_element() const
+        {
+            return data_[0];
+        }
 
-		const_iterator end() const {
-			return data_.end();
-		}
+        T &max_element()
+        {
+            return data_.back();
+        }
 
-		void erase(iterator it)
-		{
-			data_.erase(it);
-		}
+        const T &max_element() const
+        {
+            return data_.back();
+        }
 
-		// Call this if you changed a property to the given item which changed the ordering invariant
-		void restore(iterator it)
-		{
-			insertion_sort::restore_invariant(begin(), end(), it, *static_cast<Compare*>(this));
-		}
+        iterator begin()
+        {
+            return data_.begin();
+        }
 
-		T& operator[](size_type index)
-		{
-			return data_[index];
-		}
+        iterator end()
+        {
+            return data_.end();
+        }
 
-		const T& operator[](size_type index) const
-		{
-			return data_[index];
-		}
+        const_iterator begin() const
+        {
+            return data_.begin();
+        }
 
-		size_type size() const
-		{
-			return data_.size();
-		}
+        const_iterator end() const
+        {
+            return data_.end();
+        }
 
-		size_type capacity() const
-		{
-			return data_.capacity();
-		}
+        void erase(iterator it)
+        {
+            data_.erase(it);
+        }
 
-		void clear()
-		{
-			data_.clear();
-		}
+        // Call this if you changed a property to the given item which changed the ordering invariant
+        void restore(iterator it)
+        {
+            insertion_sort::restore_invariant(begin(), end(), it, *static_cast<Compare *>(this));
+        }
 
-		void pop_back()
-		{
-			data_.pop_back();
-		}
+        T &operator[](size_type index)
+        {
+            return data_[index];
+        }
 
-		void pop_front()
-		{
-			data_.pop_front();
-		}
+        const T &operator[](size_type index) const
+        {
+            return data_[index];
+        }
 
-	private:
-		static_vector<T, Size> data_;
-	};
+        size_type size() const
+        {
+            return data_.size();
+        }
 
-}
+        size_type capacity() const
+        {
+            return data_.capacity();
+        }
+
+        void clear()
+        {
+            data_.clear();
+        }
+
+        void pop_back()
+        {
+            data_.pop_back();
+        }
+
+        void pop_front()
+        {
+            data_.pop_front();
+        }
+
+      private:
+        static_vector<T, Size> data_;
+    };
+
+} // namespace ulib
 
 #endif
