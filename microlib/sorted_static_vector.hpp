@@ -7,10 +7,10 @@
 #define MICROLIB_SORTING_HPP__
 
 #include <algorithm>
+#include <functional>
 #include <microlib/static_vector.hpp>
 #include <microlib/util.hpp>
 #include <utility>
-
 
 namespace ulib
 {

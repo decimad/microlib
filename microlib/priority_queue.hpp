@@ -7,6 +7,7 @@
 #define MICROLIB_PRIORITY_QUEUE_HPP__
 
 #include <algorithm>
+#include <functional>
 #include <microlib/static_vector.hpp>
 
 
@@ -15,7 +16,7 @@ namespace ulib
 
     // FIXME: Replace with with static_heap/static_interval_heap or sorted vector implementation
 
-    template <typename Element, size_t Size>
+    template <typename Element, size_t Size, typename Compare = std::less<Element>>
     struct static_priority_queue
     {
       public:
@@ -29,7 +30,7 @@ namespace ulib
         {
             if (data_.emplace_back(std::forward<Args>(args)...))
             {
-                std::push_heap(data_.begin(), data_.end(), &priority_compare(const Element &, const Element &));
+                std::push_heap(data_.begin(), data_.end(), Compare());
             }
             else
             {
@@ -83,7 +84,7 @@ namespace ulib
         static_vector<Element, Size> data_;
     };
 
-    template <typename Element, size_t Size>
+    template <typename Element, size_t Size, typename Compare = std::less<Element>>
     struct static_priority_queue_wrap_around
     {
       public:
@@ -97,7 +98,7 @@ namespace ulib
         {
             if (data_.emplace_back(std::forward<Args>(args)...))
             {
-                std::push_heap(data_.begin(), data_.end(), &priority_compare(const Element &, const Element &));
+                std::push_heap(data_.begin(), data_.end(), Compare());
             }
             else
             {

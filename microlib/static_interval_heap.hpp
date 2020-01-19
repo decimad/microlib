@@ -6,6 +6,7 @@
 #ifndef MICROLIB_STATIC_INTERVAL_HEAP_HPP__
 #define MICROLIB_STATIC_INTERVAL_HEAP_HPP__
 
+#include <functional>
 #include <microlib/static_vector.hpp>
 #include <microlib/util.hpp>
 

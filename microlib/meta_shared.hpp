@@ -8,6 +8,8 @@
 #ifndef MICROLIB_META_SHARED_HPP_
 #define MICROLIB_META_SHARED_HPP_
 
+#include <cstddef>
+
 namespace ulib
 {
     namespace meta

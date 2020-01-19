@@ -12,7 +12,6 @@
 #include <type_traits>
 #include <utility>
 
-
 namespace ulib
 {
 
@@ -150,6 +149,7 @@ namespace ulib
 
         void copy_impl(const variant &other, std::integral_constant<size_t, sizeof...(Types)>)
         {
+            (void)other;
             current_type = -1;
         }
 

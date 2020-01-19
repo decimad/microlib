@@ -6,6 +6,7 @@
 #ifndef MICROLIB_INTRUSIVE_RING_HPP_
 #define MICROLIB_INTRUSIVE_RING_HPP_
 
+#include <cstddef>
 #include <microlib/concurrency.hpp>
 
 namespace ulib
