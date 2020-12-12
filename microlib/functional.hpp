@@ -37,6 +37,10 @@ namespace ulib
             {
             }
 
+            ~method_impl()
+            {
+            }
+
             Ret call(Args... args) const override
             {
                 return (ptr_->*target_)(std::move(args)...);
@@ -57,6 +61,10 @@ namespace ulib
             using target_ptr_type = TargetRet (*)(TargetArgs...);
 
             free_impl(target_ptr_type target) : target_(target)
+            {
+            }
+
+            ~free_impl()
             {
             }
 
@@ -83,7 +91,12 @@ namespace ulib
 
         function(const function &other) : initialized_(false)
         {
-            *this = other;
+            auto *ptr = other.get_impl();
+            if (ptr)
+            {
+                ptr->clone_construct(&storage_);
+                initialized_ = true;
+            }
         }
 
         template <typename Class, typename TargetRet, typename... TargetArgs>
@@ -124,9 +137,11 @@ namespace ulib
 
         void reset()
         {
-            if (initialized_)
+            function_impl * const impl = get_impl();
+
+            if (impl)
             {
-                get_impl()->~function_impl();
+                impl->~function_impl();
                 initialized_ = false;
             }
         }

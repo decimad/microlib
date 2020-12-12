@@ -6,8 +6,8 @@
 #ifndef MICROLIB_STATIC_UNION_HPP
 #define MICROLIB_STATIC_UNION_HPP
 
-#include <microlib/meta_array.hpp>
-#include <microlib/meta_list.hpp>
+#include <microlib/meta_vlist.hpp>
+#include <microlib/meta_tlist.hpp>
 #include <microlib/util.hpp>
 #include <type_traits>
 #include <utility>
@@ -24,7 +24,7 @@ namespace ulib
         template <typename Ret, typename ClassType, typename... Args>
         struct deduce_method_args<Ret (ClassType::*)(Args...)>
         {
-            using args_list = ulib::meta::list<Args...>;
+            using args_list = ulib::meta::tlist<Args...>;
             using return_type = Ret;
             using class_type = ClassType;
         };
@@ -102,7 +102,7 @@ namespace ulib
     struct variant
     {
       private:
-        using types = ulib::meta::list<Types...>;
+        using types = ulib::meta::tlist<Types...>;
         static constexpr size_t Size = sizeof...(Types);
 
         template <size_t Index>
@@ -223,18 +223,18 @@ namespace ulib
         template <typename... Cases, typename... Args>
         void dispatch(Args &&... args)
         {
-            dispatch_impl(meta::list<Cases...>(), std::forward<Args>(args)...);
+            dispatch_impl(meta::tlist<Cases...>(), std::forward<Args>(args)...);
         }
 
         template <typename... Cases, typename... Args>
         void dispatch_self(Args &&... args)
         {
-            dispatch_self_impl(meta::list<Cases...>(), std::forward<Args>(args)...);
+            dispatch_self_impl(meta::tlist<Cases...>(), std::forward<Args>(args)...);
         }
 
       private:
         template <typename Case0, typename... Cases, typename... Args>
-        void dispatch_impl(meta::list<Case0, Cases...>, Args &&... args)
+        void dispatch_impl(meta::tlist<Case0, Cases...>, Args &&... args)
         {
             using case_type = typename Case0::case_type;
             if (type_to_index<case_type, 0, Types...>::value == current_type)
@@ -244,12 +244,12 @@ namespace ulib
             }
             else
             {
-                return dispatch_impl(meta::list<Cases...>(), std::forward<Args>(args)...);
+                return dispatch_impl(meta::tlist<Cases...>(), std::forward<Args>(args)...);
             }
         }
 
         template <typename Case0, typename... Cases, typename... Args>
-        void dispatch_self_impl(meta::list<Case0, Cases...>, Args &&... args)
+        void dispatch_self_impl(meta::tlist<Case0, Cases...>, Args &&... args)
         {
             using case_type = typename Case0::case_type;
             if (type_to_index<case_type, 0, Types...>::value == current_type)
@@ -259,18 +259,18 @@ namespace ulib
             }
             else
             {
-                return dispatch_self_impl(meta::list<Cases...>(), std::forward<Args>(args)...);
+                return dispatch_self_impl(meta::tlist<Cases...>(), std::forward<Args>(args)...);
             }
         }
 
         template <typename... Args>
-        void dispatch_impl(meta::list<>, Args &&... args)
+        void dispatch_impl(meta::tlist<>, Args &&... args)
         {
             experimental::sink{args...};
         }
 
         template <typename... Args>
-        void dispatch_self_impl(meta::list<>, Args &&... args)
+        void dispatch_self_impl(meta::tlist<>, Args &&... args)
         {
             experimental::sink{args...};
         }
